@@ -16,16 +16,19 @@ router.get('/', (req, res) => {
 
 // POST /api/locations — save a new location
 router.post('/', (req, res) => {
-  const { address, lat, lng } = req.body;
+  const { userEmail, address, lat, lng } = req.body;
+  // console.log('Received new location:', { userEmail, address, lat, lng });
 
-  if (!address || lat == null || lng == null) {
-    res.status(400).json({ error: 'address, lat and lng are required' });
+  if (!userEmail || lat == null || lng == null) {
+    res.status(400).json({ error: 'userEmail, lat and lng are required' });
     return;
   }
 
+  const resolvedAddress = address || `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}`;
+
   const result = db.prepare(
-    'INSERT INTO locations (address, lat, lng) VALUES (?, ?, ?)'
-  ).run(address, lat, lng);
+    'INSERT INTO locations (userEmail, address, lat, lng) VALUES (?, ?, ?, ?)'
+  ).run(userEmail, resolvedAddress, lat, lng);
 
   const saved = db.prepare('SELECT * FROM locations WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json(saved);

@@ -44,9 +44,14 @@ async function initMap() {
       position: { lat, lng }
     });
 
-    // // TODO: fix; Reverse geocode the clicked point
-    // const result = await geocoder.geocode({ location: { lat, lng } });
-    const address = null;// result.results[0]?.formatted_address ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    // Reverse geocode the clicked point
+    let address;
+    try {
+      const result = await geocoder.geocode({ location: { lat, lng } });
+      address = result.results[0]?.formatted_address ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    } catch {
+      address = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
 
     selected.value = { address, lat, lng };
     store.commit('SET_SELECTED', selected.value);
