@@ -29,6 +29,14 @@ async function deleteLocation(locationId) {
   store.dispatch('deleteLocation', { token, locationId });
 }
 
+async function viewLocation(locationId) {
+  if (!locationId) {
+    alert('Location ID is missing. Cannot view this location.');
+    return;
+  }
+  store.dispatch('viewLocation', { locationId });
+}
+
 </script>
 
 <template>
@@ -54,6 +62,7 @@ async function deleteLocation(locationId) {
           <td style="padding: 6px;">{{ loc.lng.toFixed(5) }}</td>
           <td style="padding: 6px;">{{ loc.created_at ?? '—' }}</td>
           <td style="padding: 6px;">
+            <button style="height: 30px; width: 60px; background-color: lightgreen; font-weight: bold;" @click="viewLocation(loc.id)">View</button>
             <button style="height: 30px; width: 60px; background-color: lightcoral; font-weight: bold;" @click="deleteLocation(loc.id)">Delete</button>
           </td>
         </tr>

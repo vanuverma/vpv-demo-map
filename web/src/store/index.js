@@ -22,6 +22,9 @@ export default createStore({
     DELETE_LOCATION(state, locationId) {
       state.locations = state.locations.filter(loc => loc.id !== locationId);
     },
+    VIEW_LOCATION(state, locationId) {
+      state.selectedLocation = state.locations.find(loc => loc.id === locationId) || null;
+    },
   },
 
   actions: {
@@ -46,6 +49,10 @@ export default createStore({
         headers: { Authorization: `Bearer ${token}` },
       });
       commit('DELETE_LOCATION', locationId);
+    },
+
+    viewLocation({ commit }, { locationId }) {
+      commit('VIEW_LOCATION', locationId);
     },
   },
 
