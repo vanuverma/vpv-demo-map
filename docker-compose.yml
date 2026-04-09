@@ -1,0 +1,33 @@
+services:
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"        # host:container — backend reachable at http://localhost:3000
+    environment:
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:5173
+      AUTH0_DOMAIN: ${AUTH0_DOMAIN}
+      AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+    volumes:
+      - backend-data:/app/data   # persist SQLite database across restarts
+
+  frontend:
+    build:
+      context: ./web
+      args:
+        # VITE_ vars are baked in at build time — the browser calls localhost:3000 directly
+        VITE_API_BASE_URL: http://localhost:3000
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
+        VITE_GOOGLE_MAPS_MAP_ID: ${VITE_GOOGLE_MAPS_MAP_ID}
+        VITE_AUTH0_DOMAIN: ${AUTH0_DOMAIN}
+        VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
+        VITE_AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+        VITE_SHOW_GOOGLE_MAP: ${VITE_SHOW_GOOGLE_MAP:-true}
+    ports:
+      - "5173:5173"        # frontend reachable at http://localhost:5173
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:
