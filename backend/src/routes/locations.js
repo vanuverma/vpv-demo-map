@@ -3,24 +3,38 @@ import db from '../db.js';
 
 const router = Router();
 
-// GET /api/locations — return all saved locations, newest first
+function getUserEmail(req) {
+  const emailPropertyName = `${process.env.AUTH0_AUDIENCE}/email`;
+  return req.auth?.payload?.[emailPropertyName];
+}
+
+// GET /api/locations — return all saved locations for the authenticated user, newest first
 router.get('/', (req, res) => {
-  const { userEmail } = req.query;
+  const userEmail = getUserEmail(req);
+  // console.log('User email:', req.auth);
+
   if (!userEmail) {
-    res.status(400).json({ error: 'userEmail is required' });
+    res.status(401).json({ error: 'Unable to determine user identity from token' });
     return;
   }
   const locations = db.prepare('SELECT * FROM locations WHERE userEmail = ? ORDER BY id DESC').all(userEmail);
   res.json(locations);
 });
 
-// POST /api/locations — save a new location
+// POST /api/locations — save a new location for the authenticated user
 router.post('/', (req, res) => {
-  const { userEmail, address, lat, lng } = req.body;
-  // console.log('Received new location:', { userEmail, address, lat, lng });
+  const userEmail = getUserEmail(req);
+  // console.log('User email:', req.auth);
 
-  if (!userEmail || lat == null || lng == null) {
-    res.status(400).json({ error: 'userEmail, lat and lng are required' });
+  if (!userEmail) {
+    res.status(401).json({ error: 'Unable to determine user identity from token' });
+    return;
+  }
+
+  const { address, lat, lng } = req.body;
+
+  if (lat == null || lng == null) {
+    res.status(400).json({ error: 'lat and lng are required' });
     return;
   }
 
@@ -32,6 +46,32 @@ router.post('/', (req, res) => {
 
   const saved = db.prepare('SELECT * FROM locations WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json(saved);
+});
+
+
+// DELETE /api/locations/:id — delete a location for the authenticated user
+router.delete('/:id', (req, res) => {
+  const userEmail = getUserEmail(req);
+  // console.log('User email:', req.auth);
+
+  if (!userEmail) {
+    res.status(401).json({ error: 'Unable to determine user identity from token' });
+    return;
+  }
+
+  const locationId = req.params.id;
+  if (!locationId) {
+    res.status(400).json({ error: 'Location ID is required' });
+    return;
+  }
+  const result = db.prepare('DELETE FROM locations WHERE id = ? AND userEmail = ?').run(locationId, userEmail);
+
+  if (result.changes === 0) {
+    res.status(404).json({ error: 'Location not found or not authorized' });
+    return;
+  }
+
+  res.status(204).end();
 });
 
 export default router;

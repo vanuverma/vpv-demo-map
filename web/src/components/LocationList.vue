@@ -1,11 +1,34 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 const store = useStore();
+const { getAccessTokenSilently } = useAuth0();
 const locations = computed(() => store.getters.locations);
 
-onMounted(() => store.dispatch('fetchLocations'));
+onMounted(async () => {
+  const token = await getAccessTokenSilently();
+  if (!token) {
+    alert('Unable to get access token. Please try again.');
+    return;
+  }
+  store.dispatch('fetchLocations', { token });
+});
+
+async function deleteLocation(locationId) {
+  if (!locationId) {
+    alert('Location ID is missing. Cannot delete this location.');
+    return;
+  }
+  const token = await getAccessTokenSilently();
+  if (!token) {
+    alert('Unable to get access token. Please try again.');
+    return;
+  }
+  store.dispatch('deleteLocation', { token, locationId });
+}
+
 </script>
 
 <template>
@@ -20,6 +43,7 @@ onMounted(() => store.dispatch('fetchLocations'));
           <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ccc;">Lat</th>
           <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ccc;">Lng</th>
           <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ccc;">Saved at</th>
+          <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ccc;">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +53,9 @@ onMounted(() => store.dispatch('fetchLocations'));
           <td style="padding: 6px;">{{ loc.lat.toFixed(5) }}</td>
           <td style="padding: 6px;">{{ loc.lng.toFixed(5) }}</td>
           <td style="padding: 6px;">{{ loc.created_at ?? '—' }}</td>
+          <td style="padding: 6px;">
+            <button style="height: 30px; width: 60px; background-color: lightcoral; font-weight: bold;" @click="deleteLocation(loc.id)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { useAuth0 } from '@auth0/auth0-vue';
 import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
 
 const store = useStore();
+const { getAccessTokenSilently } = useAuth0();
 
 setOptions({ key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY });
 
@@ -26,6 +28,7 @@ async function initMap() {
   const map = new Map(mapDiv, {
     center: defaultCenter,
     zoom: 12,
+    mapTypeId: 'roadmap',
     mapTypeControl: false,
     mapId,
   });
@@ -49,7 +52,8 @@ async function initMap() {
     try {
       const result = await geocoder.geocode({ location: { lat, lng } });
       address = result.results[0]?.formatted_address ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    } catch {
+    } catch (error) {
+      console.error('Geocoding error:', error);
       address = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     }
 
@@ -58,9 +62,17 @@ async function initMap() {
   });
 }
 
-function saveLocation() {
-  if (!selected.value) return;
-  store.dispatch('saveLocation', selected.value);
+async function saveLocation() {
+  if (!selected.value) {
+    alert('No location selected. Please click on the map to select a location first.');
+    return;
+  }
+  const token = await getAccessTokenSilently();
+  if (!token) {
+    alert('Unable to get access token. Please try again.');
+    return;
+  }
+  store.dispatch('saveLocation', { token, ...selected.value });
   selected.value = null;
   if (activeMarker) { activeMarker.map = null; activeMarker = null; }
 }
