@@ -35,7 +35,8 @@ The app can be run in 2 ways locally
 - Open a text editor (i.e. VS Code) and open the root `vpv-demo-app` folder
 - Create a new `.env` file in the root `vpv-demo-app` folder
 - Copy all content from the `.env.example` file to the `.env` file
-- Update the variable values using the `keys` provided to you separately
+- Update the variable values using the `keys` provided to you separately. Alternatively, you can obtain a key from here https://developers.google.com/maps/documentation/javascript/get-api-key
+- If obtaining own key, ensure to enable `Maps JavaScript API` and `Geocoding API`
 - Open a command terminal and navigate to the root `vpv-demo-app` folder
 - Ensure Docker is `running`
 - In the terminal window, to start: `docker compose up --build`
@@ -63,6 +64,7 @@ The app can be run in 2 ways locally
 - Inside the `web` folder, create a new `.env` file
 - Copy over all the content from `.env.example` file to the newly created `.env` file
 - In the `.env` file, you need to update the value of `VITE_GOOGLE_MAPS_API_KEY` property. You can obtain a key from here https://developers.google.com/maps/documentation/javascript/get-api-key
+- If obtaining own key, ensure to enable `Maps JavaScript API` and `Geocoding API`
 - In a command terminal, navigate to the `web` folder
 - Execute command `npm install`
 - Once installation complete, execute command `npm run dev`
