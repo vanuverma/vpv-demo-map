@@ -37,6 +37,7 @@ The app can be run in 2 ways locally
 - Copy all content from the `.env.example` file to the `.env` file
 - Update the variable values using the `keys` provided to you separately. Alternatively, you can obtain a key from here https://developers.google.com/maps/documentation/javascript/get-api-key
 - If obtaining own key, ensure to enable `Maps JavaScript API` and `Geocoding API`
+- Similarly, you can create your own tenant in Auth0 and create 2 projects there (one `app` for webapp, another `api` for backend) and use the keys accordingly. Ensure to update login, logout URLs as needed
 - Open a command terminal and navigate to the root `vpv-demo-app` folder
 - Ensure Docker is `running`
 - In the terminal window, to start: `docker compose up --build`
@@ -52,6 +53,7 @@ The app can be run in 2 ways locally
 - Open the `vpv-demo-app` folder in a code editor (i.e. VS Code)
 - Inside the `backend` folder, create a new `.env` file
 - Copy over all the content from `.env.example` file to the newly created `.env` file
+- Update the value of environment variables with the values provided to you or with your own
 - In a command terminal, navigate to the `backend` folder
 - Execute command `npm install`
 - Once installation complete, execute command `npm run dev`
@@ -63,9 +65,8 @@ The app can be run in 2 ways locally
 - Open the `vpv-demo-app` folder in a code editor (i.e. VS Code)
 - Inside the `web` folder, create a new `.env` file
 - Copy over all the content from `.env.example` file to the newly created `.env` file
-- In the `.env` file, you need to update the value of `VITE_GOOGLE_MAPS_API_KEY` property. You can obtain a key from here https://developers.google.com/maps/documentation/javascript/get-api-key
-- If obtaining own key, ensure to enable `Maps JavaScript API` and `Geocoding API`
+- Update the value of environment variables with the values provided to you or with your own
 - In a command terminal, navigate to the `web` folder
 - Execute command `npm install`
 - Once installation complete, execute command `npm run dev`
-- Dev api server should start on `http://localhost:5173` url
+- vpv-demo-map webapp should start on `http://localhost:5173` url
