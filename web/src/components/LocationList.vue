@@ -43,7 +43,7 @@ async function viewLocation(locationId) {
   <div style="margin-top: 24px;">
     <h3>Saved Locations</h3>
     <p v-if="!locations.length" style="margin-top: 8px; color: #777;">No locations saved yet.</p>
-    <table v-else style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+    <table v-else style="width: 100%; border-collapse: collapse; margin-top: 8px; overflow: auto; border: 1px solid gray;">
       <thead>
         <tr>
           <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ccc;">#</th>

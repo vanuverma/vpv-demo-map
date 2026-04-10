@@ -38,7 +38,9 @@ The app can be run in 2 ways locally
 - Update the variable values using the `keys` provided to you separately
 - Open a command terminal and navigate to the root `vpv-demo-app` folder
 - Ensure Docker is `running`
-- In the terminal window, execute command `docker compose down -v && docker compose up --build`
+- In the terminal window, to start: `docker compose up --build`
+- To stop without losing data: `docker compose down`
+- To stop and remove existing data, use `docker compose down -v`
 - Navigate to `http://localhost:5173` in your browser to use the app
 
 

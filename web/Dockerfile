@@ -1,4 +1,4 @@
-# ── Stage 1: build ────────────────────────────────────────────────────────────
+# Stage: build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -27,7 +27,7 @@ ENV VITE_SHOW_GOOGLE_MAP=$VITE_SHOW_GOOGLE_MAP
 
 RUN npm run build
 
-# ── Stage 2: serve ────────────────────────────────────────────────────────────
+# Stage: serve
 FROM node:20-alpine
 
 WORKDIR /app
